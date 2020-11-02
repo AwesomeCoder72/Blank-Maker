@@ -6,16 +6,16 @@ THE PLAN:
 
 Different input types:
     Working on:
-    - Words per line
+    - Words total
     Later:
     - Sort out punctuation
     - part of speech
     Finished:
-    - Words total
+    - Words per line
 """
 import random
 
-def blanken_file_by_total(split_total, file_name = "text-input.txt"):
+def blanken_file_by_line(split_total, file_name = "text-input.txt"):
     output_list = []
     with open(file_name, 'r') as file:
         file_lines = file.read().split("\n")
@@ -24,11 +24,11 @@ def blanken_file_by_total(split_total, file_name = "text-input.txt"):
     print(output_list)
     
     for line in output_list:
-        for i in range(split_total+1):
+        for i in range(split_total):
             found_word = False
             while not found_word:
-                pick_from_list = random.randint(0, split_total)
-                if pick_from_list == "___":
+                pick_from_list = random.randint(0, len(line)-1)
+                if line[pick_from_list] == "___":
                     continue
                 else:
                     line[pick_from_list] = "___"
@@ -39,4 +39,5 @@ def blanken_file_by_total(split_total, file_name = "text-input.txt"):
     with open(file_name, "w") as file:
         file.write(output)
             
-blanken_file_by_total(2)
+
+blanken_file_by_line(2)
