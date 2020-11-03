@@ -6,21 +6,25 @@ THE PLAN:
 
 Different input types:
     Working on:
-    - Sort out punctuation
+    - Don't blank certain list of words
     Later:
     - part of speech
     Finished:
     - Words per line
+    - Sort out punctuation
     - Words total
 """
 import random
+import re
 
 def blanken_file_by_line(split_total, file_name = "text-input.txt"):
     output_list = []
     with open(file_name, 'r') as file:
         file_lines = file.read().split("\n")
         
-    output_list = [line.split() for line in file_lines]
+        
+    output_list = [re.findall(r"[\w']+|[.,!?;]", unsplit)
+                       for unsplit in file_lines]
     print(output_list)
     
     for line in output_list:
@@ -28,35 +32,38 @@ def blanken_file_by_line(split_total, file_name = "text-input.txt"):
             found_word = False
             while not found_word:
                 pick_from_list = random.randint(0, len(line)-1)
-                if line[pick_from_list] == "___":
+                if line[pick_from_list] == "___" or\
+            re.match("^[.,!?;]+$", line[pick_from_list]):
                     continue
                 else:
                     line[pick_from_list] = "___"
                     found_word = True
-            
-    output = "\n".join([" ".join(i) for i in output_list])
+    output = "\n".join([re.sub(r' (?=\W)', '', " ".join(i)) for i in 
+                        [line for line in output_list]])
     
     with open(file_name, "w") as file:
         file.write(output)
             
 def blanken_file_by_total(split_total, file_name = "text-input.txt"):
     with open(file_name, 'r') as file:
-        output_list = file.read().split("\n")
-        output_list = [unsplit.split() for unsplit in output_list]
+        file_lines = file.read().split("\n")
+    output_list = [re.findall(r"[\w']+|[.,!?;]", unsplit)
+                       for unsplit in file_lines]
             
     for i in range(split_total):
         found_word = False
         while not found_word:
             pick_from_list = random.randint(0, len(output_list)-1)
             pick_from_line = random.randint(0, len(output_list[pick_from_list])-1)
-            if output_list[pick_from_list][pick_from_line] == "___":
+            if output_list[pick_from_list][pick_from_line] == "___" or\
+            re.match("^[.,!?;]+$", output_list[pick_from_list][pick_from_line]):
                 continue
             else:
                 output_list[pick_from_list][pick_from_line] = "___"
                 found_word = True
-                output = "\n".join([" ".join(i) for i in output_list])
+    output = "\n".join([re.sub(r' (?=\W)', '', " ".join(i)) for i in output_list])
 
     with open(file_name, "w") as file:
         file.write(output)
 
-blanken_file_by_total(2)
+blanken_file_by_line(2)
